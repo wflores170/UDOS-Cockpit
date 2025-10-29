@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function logVersion() {
-  console.log("UDOS Cockpit v2.4.1 — Grok Intel Mobile Grid + CORS Patch");
+  console.log("UDOS Cockpit v2.4.1 — Visual Sync + Grok Grid + CORS Patch");
 }
 
 // 🔄 Shift Toggle
@@ -47,6 +47,7 @@ function bindShiftToggle() {
     updateProfitRate();
   });
 }
+
 // 🚗 Ride Mode
 function bindRideModeButtons() {
   const modeButtons = document.querySelectorAll(".ride-mode");
@@ -211,6 +212,7 @@ function initGrokIntel() {
         .forEach(rec => {
           const card = document.createElement("div");
           card.className = "grok-card";
+          card.setAttribute("data-surge", rec.surge);
           card.innerHTML = `
             <div class="grok-zone">${rec.zone}</div>
             <div class="grok-confidence">${rec.confidence} Confidence</div>
