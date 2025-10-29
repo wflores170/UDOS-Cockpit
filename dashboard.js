@@ -1,4 +1,4 @@
-// dashboard.js — UDOS Cockpit v2.3.5
+// dashboard.js — UDOS Cockpit v2.4.0
 let shiftActive = false;
 let currentMode = null;
 let tripStart = null;
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function logVersion() {
-  console.log("UDOS Cockpit v2.3.5 — Real-Time Hourly Profit Rate");
+  console.log("UDOS Cockpit v2.4.0 — Grok Intel Autonomous Logic");
 }
 
 // 🔄 Shift Toggle
@@ -47,7 +47,6 @@ function bindShiftToggle() {
     updateProfitRate();
   });
 }
-
 // 🚗 Ride Mode
 function bindRideModeButtons() {
   const modeButtons = document.querySelectorAll(".ride-mode");
@@ -97,6 +96,7 @@ function resetRideFlow() {
   document.getElementById("submit-profit").style.display = "none";
   document.getElementById("ride-buttons").style.display = "flex";
 }
+
 // 📍 GPS Ping
 function pingLocation() {
   if (!shiftActive) return;
@@ -144,7 +144,7 @@ function bindTripMetaButton() {
     btn.textContent = isVisible ? "Hide Trip Meta" : "📄 View Trip Meta";
   });
 }
-// 🧠 Grok Intel
+// 🧠 Grok Intel v3.0
 function initGrokIntel() {
   const intelPanel = document.getElementById("phases");
   intelPanel.innerHTML = "";
@@ -152,40 +152,72 @@ function initGrokIntel() {
   const now = new Date();
   const hour = now.getHours();
   const day = now.getDay();
+  const isWeekend = [5, 6].includes(day);
+  const isLateNight = hour >= 22 || hour <= 3;
+
   const buzzZones = [
-    "South Beach — Ocean Drive",
-    "Brickell → MIA",
-    "Wynwood → Kaseya Center",
-    "Downtown → Arsht Center",
-    "Midtown → E11EVEN"
+    { zone: "South Beach — Ocean Drive", income: "high", nightlife: true, city: "Miami" },
+    { zone: "Brickell → MIA", income: "high", airport: true, city: "Miami" },
+    { zone: "Wynwood → Kaseya Center", income: "medium", nightlife: true, city: "Miami" },
+    { zone: "Downtown → Arsht Center", income: "medium", event: true, city: "Miami" },
+    { zone: "Midtown → E11EVEN", income: "high", nightlife: true, city: "Miami" },
+    { zone: "Las Olas → FLL", income: "medium", nightlife: true, city: "Fort Lauderdale" },
+    { zone: "Downtown WPB → Kravis Center", income: "medium", event: true, city: "West Palm Beach" }
   ];
 
-  const recommendations = buzzZones.map(zone => {
-    let score = 0;
-    if (zone.includes("South Beach") && hour >= 16 && hour <= 22) score += 20;
-    if (zone.includes("MIA") && [16,17,18].includes(hour)) score += 15;
-    if (zone.includes("E11EVEN") && hour >= 22) score += 15;
-    if ([5,6].includes(day)) score += 10;
-    if (tripMeta.some(t => t.startLocation)) score += 5;
+  const keywords = ["miami nightlife", "concert", "party", "after hours", "festival", "conference"];
+  const eventMatches = [];
 
-    return {
-      zone,
-      confidence: score > 30 ? "High" : score > 15 ? "Medium" : "Low",
-      surge: zone.includes("South Beach") ? "Moderate" : "Low",
-      score
-    };
-  });
+  fetch("https://www.miamiandbeaches.com/events")
+    .then(res => res.text())
+    .then(html => {
+      keywords.forEach(keyword => {
+        if (html.toLowerCase().includes(keyword)) {
+          eventMatches.push(keyword);
+        }
+      });
 
-  recommendations.forEach(rec => {
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${rec.zone}</strong><br>
-      Confidence: ${rec.confidence}<br>
-      Source: Buzz-based<br>
-      Description: Target rides in ${rec.zone}. Score: ${rec.score}. ${rec.surge} opportunity.`;
-    intelPanel.appendChild(li);
-  });
+      const recommendations = buzzZones.map(zone => {
+        let score = 0;
+
+        if (zone.income === "high") score += 15;
+        if (zone.nightlife && isLateNight) score += 10;
+        if (zone.airport && [16, 17, 18, 19].includes(hour)) score += 15;
+        if (zone.event && eventMatches.length > 0) score += 25;
+        if (isWeekend) score += 10;
+        if (tripMeta.length > 0) score += 5;
+
+        const isMiami = zone.city === "Miami";
+        const meetsProfitThreshold = isMiami || score >= 50;
+
+        const confidence = score >= 40 ? "High" : score >= 20 ? "Medium" : "Low";
+        const surge = score >= 50 ? "Massive" : score >= 30 ? "Moderate" : "Low";
+
+        return {
+          zone: zone.zone,
+          confidence,
+          score,
+          surge,
+          show: meetsProfitThreshold,
+          description: `Target rides in ${zone.zone}. Score: ${score}. ${surge} opportunity.`
+        };
+      });
+
+      recommendations
+        .filter(rec => rec.show)
+        .forEach(rec => {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${rec.zone}</strong><br>
+            Confidence: ${rec.confidence}<br>
+            Source: Real-time buzz + event scan<br>
+            Description: ${rec.description}`;
+          intelPanel.appendChild(li);
+        });
+    })
+    .catch(err => {
+      console.warn("Event fetch failed:", err.message);
+    });
 }
-
 // 🗺️ Map Sync
 function initMapSync() {
   const map = L.map("map").setView([25.7617, -80.1918], 12);
@@ -216,10 +248,12 @@ function updateProfitRate() {
 
 // 📏 Haversine Distance
 function haversineMiles(lat1, lon1, lat2, lon2) {
-  const R = 3958.8;
+  const R = 3958.8; // Radius of Earth in miles
   const toRad = deg => deg * Math.PI / 180;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }

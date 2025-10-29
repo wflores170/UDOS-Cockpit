@@ -3,25 +3,25 @@ html, body {
   max-width: 100%;
   overflow-x: hidden;
   font-family: 'Segoe UI', sans-serif;
-  margin: 20px;
+  margin: 10px;
   background-color: #0a0a0f;
   color: #f0f0f0;
 }
 
 header {
-  margin-bottom: 10px;
   text-align: center;
   color: #00f6ff;
   text-shadow: 0 0 8px #00f6ff;
+  margin-bottom: 10px;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   margin-bottom: 5px;
 }
 
 #shift-status, #profit-rate {
-  font-size: 16px;
+  font-size: 14px;
   margin: 4px 0;
 }
 
@@ -30,51 +30,28 @@ h1 {
   text-shadow: 0 0 6px #00ff88;
 }
 
-button {
-  padding: 10px 16px;
-  margin: 5px;
-  background-color: #111;
-  color: #00f6ff;
-  border: 1px solid #00f6ff;
-  border-radius: 4px;
-  cursor: pointer;
-  text-shadow: 0 0 4px #00f6ff;
-}
-
-button:hover {
-  background-color: #00f6ff;
-  color: #0a0a0f;
-  text-shadow: none;
-}
-
-input[type="number"] {
-  padding: 8px;
-  margin: 5px;
-  width: 120px;
-  border-radius: 4px;
-  border: 1px solid #ff00c8;
-  background-color: #1a1a1f;
-  color: #ff00c8;
-  text-align: center;
+#toggle-shift {
+  margin-top: 6px;
 }
 
 #ride-buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin: 10px 0;
+  flex-wrap: wrap;
 }
 
-#ride-buttons button,
-#end-ride-section button {
+.ride-mode {
+  padding: 8px 12px;
   background-color: #1a1a1f;
   border: 1px solid #ff00c8;
   color: #ff00c8;
+  border-radius: 4px;
   text-shadow: 0 0 4px #ff00c8;
 }
 
-#ride-buttons button:hover,
-#end-ride-section button:hover {
+.ride-mode:hover {
   background-color: #ff00c8;
   color: #0a0a0f;
   text-shadow: none;
@@ -82,16 +59,15 @@ input[type="number"] {
 
 #intel-map-container {
   width: 100%;
-  margin-top: 20px;
   overflow-x: hidden;
 }
 
 .intel-map-row {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
   justify-content: space-between;
-  gap: 20px;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
 
 #intel-panel, #map-panel {
@@ -100,44 +76,35 @@ input[type="number"] {
   max-width: 50%;
   box-sizing: border-box;
   background-color: #111;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 0 10px #00f6ff;
 }
 
 #phases li {
-  margin-bottom: 12px;
-  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding: 8px;
   background-color: #1a1a1f;
   border-left: 4px solid #ff00c8;
   box-shadow: 0 0 6px #ff00c8;
 }
 
 #map {
-  height: 300px;
+  height: 200px;
   border: 2px solid #00f6ff;
   border-radius: 6px;
   box-shadow: 0 0 10px #00f6ff;
 }
 
-#bottom-controls {
-  margin-top: 30px;
+#end-ride-section {
+  margin-top: 10px;
   text-align: center;
 }
 
-#view-trip-meta,
-#end-shift {
-  background-color: #111;
-  border: 1px solid #00f6ff;
-  color: #00f6ff;
-  text-shadow: 0 0 4px #00f6ff;
-}
-
-#view-trip-meta:hover,
-#end-shift:hover {
-  background-color: #00f6ff;
-  color: #0a0a0f;
-  text-shadow: none;
+#bottom-controls {
+  margin-top: 20px;
+  text-align: center;
 }
 
 #trip-meta-panel {
