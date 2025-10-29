@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>UDOS Cockpit</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <header>
+    <h1>UDOS Tactical Cockpit</h1>
+    <p id="shift-status">Status: Inactive</p>
+    <p id="profit-rate">Hourly Rate: —</p>
+    <button id="toggle-shift">Start Shift</button>
+  </header>
+
+  <section id="ride-buttons" style="display:none;">
+    <button class="ride-mode" data-mode="Comfort">Comfort</button>
+    <button class="ride-mode" data-mode="XL">XL</button>
+    <button class="ride-mode" data-mode="Premier">Premier</button>
+  </section>
+
+  <section id="end-ride-section" style="display:none;">
+    <button id="end-ride">End Ride</button>
+    <input type="number" id="net-profit" placeholder="Enter fare" style="display:none;">
+    <button id="submit-profit" style="display:none;">Submit</button>
+  </section>
+
+  <section id="intel-map-container">
+    <div class="intel-map-row">
+      <div id="intel-panel">
+        <h2>🧠 Grok Intel</h2>
+        <ul id="phases"></ul>
+      </div>
+
+      <div id="map-panel">
+        <h2>🗺️ Map</h2>
+        <div id="map"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bottom-controls">
+    <button id="view-trip-meta">📄 View Trip Meta</button>
+    <div id="trip-meta-panel"></div>
+    <button id="end-shift" style="display:none;">Go Offline</button>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
