@@ -1,4 +1,4 @@
-// dashboard.js — UDOS Cockpit v2.4.0
+// dashboard.js — UDOS Tactical Cockpit v2.4.1
 let shiftActive = false;
 let currentMode = null;
 let tripStart = null;
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function logVersion() {
-  console.log("UDOS Cockpit v2.4.0 — Grok Intel Autonomous Logic");
+  console.log("UDOS Cockpit v2.4.1 — Grok Intel Mobile Grid + CORS Patch");
 }
 
 // 🔄 Shift Toggle
@@ -144,10 +144,10 @@ function bindTripMetaButton() {
     btn.textContent = isVisible ? "Hide Trip Meta" : "📄 View Trip Meta";
   });
 }
-// 🧠 Grok Intel v3.0
+// 🧠 Grok Intel v3.0 — Mobile Grid + CORS Proxy
 function initGrokIntel() {
-  const intelPanel = document.getElementById("phases");
-  intelPanel.innerHTML = "";
+  const grid = document.getElementById("phases-grid");
+  grid.innerHTML = "";
 
   const now = new Date();
   const hour = now.getHours();
@@ -209,18 +209,22 @@ function initGrokIntel() {
       recommendations
         .filter(rec => rec.show)
         .forEach(rec => {
-          const li = document.createElement("li");
-          li.innerHTML = `<strong>${rec.zone}</strong><br>
-            Confidence: ${rec.confidence}<br>
-            Source: Real-time buzz + event scan<br>
-            Description: ${rec.description}`;
-          intelPanel.appendChild(li);
+          const card = document.createElement("div");
+          card.className = "grok-card";
+          card.innerHTML = `
+            <div class="grok-zone">${rec.zone}</div>
+            <div class="grok-confidence">${rec.confidence} Confidence</div>
+            <div class="grok-surge">${rec.surge} Surge</div>
+            <div class="grok-desc">${rec.description}</div>
+          `;
+          grid.appendChild(card);
         });
     })
     .catch(err => {
       console.warn("Event fetch failed:", err.message);
     });
 }
+
 // 🗺️ Map Sync
 function initMapSync() {
   const map = L.map("map").setView([25.7617, -80.1918], 12);
