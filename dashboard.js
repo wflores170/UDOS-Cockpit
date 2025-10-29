@@ -168,7 +168,10 @@ function initGrokIntel() {
   const keywords = ["miami nightlife", "concert", "party", "after hours", "festival", "conference"];
   const eventMatches = [];
 
-  fetch("https://www.miamiandbeaches.com/events")
+  const baseURL = "https://www.miamiandbeaches.com/events";
+  const proxyURL = "https://corsproxy.io/?" + encodeURIComponent(baseURL);
+
+  fetch(proxyURL)
     .then(res => res.text())
     .then(html => {
       keywords.forEach(keyword => {
