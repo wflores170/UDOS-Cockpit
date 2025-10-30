@@ -1,70 +1,40 @@
-// Ensure Leaflet is loaded
 if (typeof L === "undefined") {
-  console.error("Leaflet library not loaded. Check <script src='leaflet.js'> in index.html.");
+  console.error("Leaflet library not loaded.");
 }
 
-// Initialize Leaflet map
-const map = L.map('map').setView([25.7617, -80.1918], 12); // Miami
+const map = L.map("map", {
+  center: [25.7617, -80.1918],
+  zoom: 12,
+  maxZoom: 18,
+  minZoom: 10,
+  zoomControl: true,
+  crs: L.CRS.EPSG3857
+});
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap contributors",
+  maxZoom: 19,
+  subdomains: "abc"
 }).addTo(map);
 
-// Track current GPS location
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(pos => {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
+window.heatLayer = L.heatLayer([], {
+  radius: 25,
+  blur: 15,
+  maxZoom: 17
+}).addTo(map);
 
-    L.circle([lat, lon], {
-      radius: 50,
-      color: '#0ff',
-      fillColor: '#0ff',
-      fillOpacity: 0.6
-    }).addTo(map);
-  });
-}
+navigator.geolocation.getCurrentPosition(pos => {
+  const { latitude, longitude } = pos.coords;
+  L.marker([latitude, longitude]).addTo(map).bindPopup("You are here").openPopup();
+}, err => {
+  console.warn("GPS error:", err.message);
+  L.marker([25.7617, -80.1918]).addTo(map).bindPopup("Default: Brickell Core").openPopup();
+});
 
-// Render Grok surge zones with neon overlays
-function updateMapOverlays() {
-  const zones = typeof getLiveGrokZones === "function" ? getLiveGrokZones() : [];
-  if (!Array.isArray(zones)) return;
+setTimeout(() => {
+  map.invalidateSize();
+}, 500);
 
-  zones.forEach(zone => {
-    const colorMap = {
-      low: "#00000000",
-      moderate: "yellow",
-      high: "red",
-      massive: "purple"
-    };
-    const color = colorMap[zone.surge_level] || "gray";
-
-    // Neon surge circle
-    L.circle([zone.lat, zone.lon], {
-      radius: 800,
-      color: color,
-      fillColor: color,
-      fillOpacity: 0.4,
-      weight: 2
-    }).addTo(map);
-
-    // Neon surge box label
-    const surgeLabel = L.divIcon({
-      className: 'surge-box',
-      html: `<div style="
-        background: rgba(255, 0, 255, 0.8);
-        color: cyan;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: bold;
-        font-family: 'Courier New', monospace;
-        box-shadow: 0 0 10px magenta;
-      ">${zone.surge.toFixed(1)}x</div>`
-    });
-
-    L.marker([zone.lat, zone.lon], {
-      icon: surgeLabel,
-      interactive: false
-    }).addTo(map);
-  });
-}
+window.addEventListener("resize", () => {
+  map.invalidateSize();
+});

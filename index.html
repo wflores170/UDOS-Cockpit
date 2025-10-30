@@ -2,45 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UDOS Tactical Cockpit</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
   <header>
-    <h1>🚘 UDOS Tactical Cockpit</h1>
-    <p id="shift-status">Status: Inactive</p>
-    <button id="toggle-shift">▶️ Start Shift</button>
-    <button id="end-shift" style="display:none;">⏹️ End Shift</button>
-    <p id="profit-rate">Hourly Rate: —</p>
+    <h1>UDOS Tactical Cockpit</h1>
+    <div id="top-bar">
+      <span id="shift-status">Status: Inactive</span>
+      <span id="profit-rate">Hourly Rate: —</span>
+    </div>
+    <button id="toggle-shift">Start Shift</button>
+    <button id="end-shift" style="display:none;">End Shift</button>
   </header>
 
-  <section id="ride-logger">
-    <div id="ride-buttons" style="display:none;">
-      <button class="ride-mode" data-mode="Comfort">Comfort</button>
-      <button class="ride-mode" data-mode="XL">XL</button>
-      <button class="ride-mode" data-mode="Premier">Premier</button>
-    </div>
-    <div id="end-ride-section" style="display:none;">
-      <button id="end-ride">🛑 End Ride</button>
-      <input type="number" id="net-profit" placeholder="Enter fare $" style="display:none;" />
-      <button id="submit-profit" style="display:none;">✅ Log Ride</button>
-    </div>
+  <section id="ride-buttons" style="display:none;">
+    <button class="ride-mode" data-mode="Comfort">Comfort</button>
+    <button class="ride-mode" data-mode="XL">XL</button>
+    <button class="ride-mode" data-mode="Premier">Premier</button>
   </section>
 
-  <section id="intel-map-container">
-    <div class="intel-map-row">
-      <div id="intel-panel">
-        <h2>🧠 Grok Intel</h2>
-        <div id="phases-grid" class="grok-grid"></div>
-      </div>
-      <div id="map-panel">
-        <h2>🗺️ Map</h2>
-        <div id="map"></div>
-      </div>
-    </div>
+  <section id="end-ride-section" style="display:none;">
+    <button id="end-ride">End Ride</button>
+    <input type="number" id="net-profit" placeholder="Enter Fare" style="display:none;" />
+    <button id="submit-profit" style="display:none;">Log Trip</button>
+  </section>
+
+  <section id="mode-select">
+    <label><input type="checkbox" class="mode-toggle" value="Comfort" checked /> Comfort</label>
+    <label><input type="checkbox" class="mode-toggle" value="XL" checked /> XL</label>
+    <label><input type="checkbox" class="mode-toggle" value="Premier" checked /> Premier</label>
+  </section>
+
+  <section id="intel">
+    <h2>Grok Intel Zones</h2>
+    <div id="phases-grid"></div>
   </section>
 
   <section id="trip-meta">
@@ -48,6 +45,6 @@
     <div id="trip-meta-panel"></div>
   </section>
 
-  <script src="dashboard.js"></script>
+  <script type="module" src="dashboard.js"></script>
 </body>
 </html>
